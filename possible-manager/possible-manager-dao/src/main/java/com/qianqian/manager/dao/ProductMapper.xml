@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qianqian.manager.dao.ProductMapper" >
+
+  <sql id="Base_Column_List">
+      p.pid,p.pname,p.market_price,p.shop_price,p.pimage,p.pdesc,p.is_hot,p.pdate,p.pflag,p.cid, c.cname
+  </sql>
+
+  <sql id="Where_Clause">
+    <where>
+      <if test="productQuery != null and productQuery.pname != null and productQuery.pname != '' ">
+        p.pname like '%${productQuery.pname}%'
+      </if>
+    </where>
+  </sql>
+
+  <select id="countProducts" resultType="_long">
+    SELECT COUNT(*) FROM product p
+    <include refid="Where_Clause" />
+  </select>
+
+  <select id="listProductsByPage" parameterType="com.qianqian.common.pojo.dto.PageInfo" resultType="com.qianqian.manager.pojo.vo.ProductCustom">
+    select
+    <include refid="Base_Column_List"/>
+    from product p left join category c on p.cid=c.cid
+    <include refid="Where_Clause" />
+    limit #{pageInfo.offset},#{pageInfo.limit}
+  </select>
+
+
+  <insert id="insert" parameterType="com.qianqian.manager.pojo.po.Product">
+    INSERT INTO product (pname,market_price,shop_price,pimage,pdesc,is_hot,pdate,pflag,cid) VALUES (#{pname},#{market_price},#{shop_price},#{pimage},#{pdesc},#{is_hot},#{pdate},#{pflag},#{cid})
+  </insert>
+
+  <delete id="delete">
+    DELETE FROM product WHERE pid=#{pid}
+  </delete>
+
+  <update id="update" >
+    UPDATE product SET  pname=#{pname},market_price=#{market_price},shop_price=#{shop_price},pdesc=#{pdesc},pdate=#{pdate},pflag=#{pflag},cid=#{cid} WHERE pid=#{pid}
+  </update>
+
+  <update id="updateByIshot">
+    UPDATE product SET  is_hot=#{is_hot} WHERE pid=#{pid}
+  </update>
+
+</mapper>
