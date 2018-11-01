@@ -24,6 +24,7 @@
     <include refid="Base_Column_List"/>
     from product p left join category c on p.cid=c.cid
     <include refid="Where_Clause" />
+    ORDER  BY  p.is_hot DESC
     limit #{pageInfo.offset},#{pageInfo.limit}
   </select>
 
